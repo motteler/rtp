@@ -53,3 +53,13 @@ void fmatch(
 
 int hsize (int htype);
 
+int getchan();
+
+int rtphcheck(struct rtp_head *head);
+
+void headinit(struct rtp_head *head);
+
+void profinit(struct rtp_prof *prof);
+
+int hsize (int htype);
+

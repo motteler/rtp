@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "hdf.h"
 #include "rtp.h"
+#include "rtpfnx.h"
 
 void dump_chan(int ci) {
 

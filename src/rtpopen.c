@@ -43,8 +43,6 @@ DISCUSSION
 */
 
 #include <stdio.h>
-
-#define RTPDEF
 #include "rtp.h"
 #include "rtpfnx.h"
 

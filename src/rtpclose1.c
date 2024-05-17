@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "rtp.h"
+#include "pvfnx.h"
 
 int rtpclose1(int ci) {
 

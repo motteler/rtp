@@ -7,6 +7,7 @@
 
 #include "hdf.h"
 #include "rtp.h"
+#include "pvfnx.h"
 
 int rtpread2(int ci,		/* RTP channel 		IN */
 	     char *sbuf		/* structure buffer 	IN */

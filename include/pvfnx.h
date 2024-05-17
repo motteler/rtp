@@ -39,3 +39,24 @@ int pvwrite2(int32 vdata_id,          /* HDF vdata ID                 IN  */
 
 int pvwrite3(int32 vdata_id);
 
+int32 pvclose(int32 file_id);
+
+void dump_flist(struct FLIST (*flist)[], int n, char *s);
+
+void dump_attrs(struct ALIST (*alist)[], int n, char *s);
+
+void dump_chan(int ci);
+
+void dump_hstr(struct rtp_head *head);
+
+void dump_pstr(struct rtp_head *head, struct rtp_prof *prof);
+
+void dump_vbuf(
+               struct FLIST *flist, 
+               char *buf,
+               int p1[], 
+               int p2[],
+               int n, 
+              char *s
+               );
+

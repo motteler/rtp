@@ -9,69 +9,46 @@
 # are HDFHOME, RTPHOME, and your local compiler options
 #
 
+# get HDF libs and Intel compilers
+# module load HDF/4.2.14-GCCcore-8.3.0
+# module load intel-compilers/2021.4.0
+
 # --------------
 # HDF parameters
 # --------------
 
-# set HDFHOME to point to the local HDF installation
-HDFHOME = /asl/code/external/hdf/hdf4
+HDFHOME = /usr/ebuild/software/HDF/4.2.14-GCCcore-8.3.0
+HDFINC = -I$(HDFHOME)/include/hdf
+HDFLIB = -L$(HDFHOME)/lib -ldf
 
 # --------------
 # RTP parameters
 # --------------
 
-# set RTPHOME to point to the local RTP installation
 RTPHOME = ..
 
 # ------------------
 # C compiler options
 # -------------------
 
-# -64 for 64-bit IRIX
-# CFLAGS = -g -64
-# CFLAGS = -g
-CFLAGS = -O
 CC = icc
+CFLAGS = -O2
 
 # ------------------------
 # Fortran compiler options
 # ------------------------
 
-# Absoft Fortran
-# --------------
-# -N109  fold all names to upper case
-# -C     check array bounds
-# -O     some optimizations
-# -N3    add record info to unformatted files
-# -s     static allocation
-# FFLAGS = -N109 -C -O -N3 -s
-# FFLAGS = -g
-#FFLAGS = -O
-#FLIB = -lU77	# Linux Absoft needs -lU77
-#F77 = /asl/opt/absoft/absoft10.0/bin/af77
-
-# SunOS options
-# -------------
-# FFLAGS = -e -fast -w     
-# F77 = f77
-
-# SGI options
-# -----------
-# include -cpp option if not default 
-# FFLAGS = -O
-# -64 for 64-bit IRIX
-# FFLAGS  = -O -64
-# F77 = f77
-
-#FFLAGS = -O -assume nounderscore
-FFLAGS = -O
 F77 = ifort
+FFLAGS = -extend-source 132 -check bounds -O2
 
-# pass the variables set above to the subdirectory makefiles
-#
-EXPORTS = HDFHOME="$(HDFHOME)" RTPHOME="$(RTPHOME)" \
-	CC="$(CC)" CFLAGS="$(CFLAGS)" CLIB="$(CLIB)" \
-	F77="$(F77)" FFLAGS="$(FFLAGS)" FLIB="$(FLIB)"
+# -------------------------------------------
+# pass options to the subdirectory makefiles
+# -------------------------------------------
+
+EXPORTS = RTPHOME="$(RTPHOME)" \
+	HDFINC="$(HDFINC)" HDFLIB="$(HDFLIB)" \
+	CC="$(CC)" CFLAGS="$(CFLAGS)" \
+	F77="$(F77)" FFLAGS="$(FFLAGS)" \
 
 # -------------
 # Make Targets

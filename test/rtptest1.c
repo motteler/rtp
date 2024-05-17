@@ -6,9 +6,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "hdf.h"
-
-#define RTPDEF
 #include "rtp.h"
+#include "pvfnx.h"
+#include "rtpfnx.h"
 
 main (int argc, char *argv[]) {
 
@@ -120,8 +120,8 @@ main (int argc, char *argv[]) {
 	    &palist1, 2, 	    
 	    &ci);
 
-  rtpwrite2(ci, &prof1[0]);
-  rtpwrite2(ci, &prof1[1]);
+  rtpwrite2(ci, (char *) &prof1[0]);
+  rtpwrite2(ci, (char *) &prof1[1]);
 
   rtpclose1(ci);
 
@@ -133,8 +133,8 @@ main (int argc, char *argv[]) {
 	   &palist, &pnattr, 	    
 	   &ci);
 
-  rtpread2(ci, &prof2[0]);
-  rtpread2(ci, &prof2[1]);
+  rtpread2(ci, (char *) &prof2[0]);
+  rtpread2(ci, (char *) &prof2[1]);
 
   dump_chan(ci);
 

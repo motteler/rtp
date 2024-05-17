@@ -5,47 +5,22 @@
 # Fortran application interfaces
 #
 # the site-specific parameters HDFHOME, RTPHOME, and the C and 
-# Fortran compiler options can be set in the top level makefile
-
-# --------------
-# HDF parameters
-# --------------
-
-# set HDFHOME to point to the local HDF installation
-HDFHOME = /asl/opt
-
-# HDF definitions, relative to HDFHOME
-HDFINC   = -I$(HDFHOME)/include
-HDFLIB   = -L$(HDFHOME)/lib -ldf -ljpeg -lz
+# Fortran compiler options are set in the top level makefile
 
 # --------------
 # RTP parameters
 # --------------
 
-# set RTPHOME to point to the local RTP installation
-# RTPHOME = /usr/local/rtp
-RTPHOME = ..
-
 # RTP definitions, relative to RTPHOME
 RTPINC  = -I$(RTPHOME)/include		# RTP C and F77 includes
 RTPLIB  = -L$(RTPHOME)/lib -lrtp	# RTP C and F77 library
-
-# ------------------
-# C compiler options
-# -------------------
-
-CFLAGS = -O $(RTPINC)
-CC = cc
+HFILES = ../include/rtp.h ../include/pvdefs.h
 
 # ------------
 # make targets
 # -------------
 
-all: prep librtp.a install
-
-prep:
-	cp -p ../include/rtp.h .
-	cp -p ../include/pvdefs.h .
+all: librtp.a install
 
 # --------------------------
 # vdata interface procedures
@@ -57,8 +32,8 @@ PVSRC = pvopen.c pvclose.c \
 PVOBS = pvopen.o pvclose.o \
 	pvread1.o pvwrite1.o pvread2.o pvwrite2.o pvread3.o pvwrite3.o 
 
-$(PVOBS): $(PVSRC) rtp.h pvdefs.h
-	$(CC) $(CFLAGS) -c $(PVSRC) $(HDFINC)
+$(PVOBS): $(PVSRC) $(HFILES)
+	$(CC) $(CFLAGS) -c $(PVSRC) $(RTPINC) $(HDFINC)
 
 # ----------------
 # RTP C procedures
@@ -71,8 +46,8 @@ RTPOBS = rtpwrite1.o rtpwrite2.o rtpread1.o rtpread2.o getchan.o \
 		rtpclose1.o gsplit.o rtphcheck.o headinit.o profinit.o \
 		fmatch.o hsize.o
 
-$(RTPOBS): $(RTPSRC) rtp.h pvdefs.h
-	$(CC) $(CFLAGS) -c $(RTPSRC) $(HDFINC)
+$(RTPOBS): $(RTPSRC) $(HFILES)
+	$(CC) $(CFLAGS) -c $(RTPSRC) $(RTPINC) $(HDFINC)
 
 # -----------------------
 # test support procedures
@@ -84,8 +59,8 @@ TSTSRC = dump_flist.c dump_vbuf.c dump_pstr.c dump_hstr.c \
 TSTOBS = dump_flist.o dump_vbuf.o dump_pstr.o dump_hstr.o \
 		dump_attrs.o dump_chan.o
 
-$(TSTOBS): $(TSTSRC) rtp.h pvdefs.h
-	$(CC) $(CFLAGS) -c $(TSTSRC) $(HDFINC)
+$(TSTOBS): $(TSTSRC) $(HFILES)
+	$(CC) $(CFLAGS) -c $(TSTSRC) $(RTPINC) $(HDFINC)
 
 # -------------
 # C/Fortran API
@@ -94,8 +69,8 @@ $(TSTOBS): $(TSTSRC) rtp.h pvdefs.h
 FORSRC = rtpopen.c rtpread.c rtpwrite.c rtpclose.c rtpvers.c rtpinit.c
 FOROBS = rtpopen.o rtpread.o rtpwrite.o rtpclose.o rtpvers.o rtpinit.o
 
-$(FOROBS): $(FORSRC) rtp.h pvdefs.h
-	$(CC) $(CFLAGS) -c $(FORSRC) $(HDFINC)
+$(FOROBS): $(FORSRC) $(HFILES)
+	$(CC) $(CFLAGS) -c $(FORSRC) $(RTPINC) $(HDFINC)
 
 # -----------
 # RTP library

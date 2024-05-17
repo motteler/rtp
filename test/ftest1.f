@@ -80,12 +80,25 @@ c
         head.nchan = 0
 
         head.memis = 0
-        head.mlevs = 4
+        head.mlevs = 8
 
-        prof.nlevs = 3
+        prof.nlevs = 8
         prof.stemp = 290
         prof.scanang = 42
 
+        prof.plevs(1) = 10
+        prof.plevs(2) = 11
+        prof.plevs(3) = 12
+        prof.plevs(4) = 13
+        prof.plevs(5) = 14
+        prof.plevs(8) = 20
+
+        prof.ptemp(1) = 280
+        prof.ptemp(2) = 281
+        prof.ptemp(3) = 282
+        prof.ptemp(4) = 283
+        prof.ptemp(5) = 284
+        prof.ptemp(8) = 300
 c
 c create the file, write the attributes, write the (mostly unfilled) 
 c profile structure, and close the file

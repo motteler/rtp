@@ -8,9 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "hdf.h"
-
-#define RTPDEF
 #include "rtp.h"
+#include "pvfnx.h"
+#include "rtpfnx.h"
 
 main (int argc, char *argv[]) {
 
@@ -37,7 +37,7 @@ main (int argc, char *argv[]) {
   if (s1 == -1) exit(-1);
 
   for (i=0; i<48; i++) {
-    s1 = rtpread2(ci, &prof1[i]);
+    s1 = rtpread2(ci, (char *) &prof1[i]);
     if (s1 == -1) exit(-1);
   }
 
@@ -59,7 +59,7 @@ main (int argc, char *argv[]) {
 
   printf("calling rtpwrite1\n");
   for (i=0; i<48; i++) {
-    s1 = rtpwrite2(ci, &prof1[i]);
+    s1 = rtpwrite2(ci, (char *) &prof1[i]);
     if (s1 == -1) exit(-1);
   }
 

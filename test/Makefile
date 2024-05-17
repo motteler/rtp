@@ -12,46 +12,12 @@
 # Fortran compiler options can be set in the top level makefile
 
 # --------------
-# HDF parameters
-# --------------
-
-# set HDFHOME to point to the local HDF installation
-HDFHOME = /asl/opt/hdf/4.2r4
-
-# HDF definitions, relative to HDFHOME
-HDFINC   = -I$(HDFHOME)/include
-HDFLIB   = -L$(HDFHOME)/lib -ldf -ljpeg -lz
-
-# --------------
 # RTP parameters
 # --------------
-
-# set RTPHOME to point to the local RTP installation
-RTPHOME = ..
 
 # RTP definitions, relative to RTPHOME
 RTPINC  = -I$(RTPHOME)/include		# RTP C and F77 includes
 RTPLIB  = -L$(RTPHOME)/lib -lrtp	# RTP C and F77 library
-SRCINC  = -I$(RTPHOME)/src		# low-level test includes
-
-# ------------------
-# C compiler options
-# -------------------
-
-#CFLAGS = -O
-CC = icc
-
-# ------------------------
-# Fortran compiler options
-# ------------------------
-
-#FFLAGS = -O
-#FLIB = -lU77
-%F77 = /asl/opt/absoft/absoft10.0/bin/af77
-
-F77 = /cm/shared/apps/intel/composer_xe/2015.3.187/bin/intel64/ifort
-#FLAGS = -O3 -names uppercase -us
-FLAGS = -O -assume nounderscore
 
 # ----------------
 # Main target list
@@ -67,7 +33,7 @@ all: pvtest rtptest1 rtptest2 rtpsize ftest1 ftest2
 pvtest: pvtest.o
 	$(CC) $(CFLAGS) -o pvtest pvtest.o $(RTPLIB) $(HDFLIB)
 pvtest.o: pvtest.c
-	$(CC) $(CFLAGS) -c pvtest.c $(SRCINC) $(HDFINC)
+	$(CC) $(CFLAGS) -c pvtest.c $(RTPINC) $(HDFINC)
 
 # RTP main test 1
 rtptest1: rtptest1.o

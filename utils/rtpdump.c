@@ -24,9 +24,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "hdf.h"
-
-#define RTPDEF
 #include "rtp.h"
+#include "pvfnx.h"
+#include "rtpfnx.h"
 
 #define USAGE "Usage: rtpdump [-achp] [-n <k>] rtpfile\n"
 
@@ -98,7 +98,7 @@ main (int argc, char *argv[]) {
    */
   for (s1 = 1, i = 0; i < pnum && s1 == 1; i++) {
     profinit(&prof);
-    s1 = rtpread2(rchan, &prof);
+    s1 = rtpread2(rchan, (char *) &prof);
   }
   if (s1 != 1 || i == 0) {
     fprintf(stderr, "rtpdump: profile %d read failed\n", i);

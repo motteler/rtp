@@ -18,8 +18,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "hdf.h"
-#define RTPDEF
 #include "rtp.h"
+#include "rtpfnx.h"
 
 struct rtp_prof testprof;
 struct rtp_head testhead;
@@ -77,13 +77,17 @@ main () {
   fprintf(stdout, "the RTP profile structure span is %d bytes\n", 
 	  pspan);
 
+  /*
+
   fprintf(stdout, "size of header flist is %d bytes, %d fields\n",
-          i = sizeof(hfield),
-          i = sizeof(hfield)/(sizeof(char *)+sizeof(int)*2));
+          i = sizeof((struct FLIST) hfield),
+          i = sizeof((struct FLIST) hfield)/(sizeof(char *)+sizeof(int)*2));
 
   fprintf(stdout, "size of profile flist is %d bytes, %d fields\n",
-          i = sizeof(pfield),
-          i = sizeof(pfield)/(sizeof(char*)+sizeof(int)*2));
+          i = sizeof((struct FLIST) pfield),
+          i = sizeof((struct FLIST) pfield)/(sizeof(char*)+sizeof(int)*2));
+
+  */
 
   fprintf(stdout, "static space for attributes is %d bytes\n", 
 	  i = sizeof(struct rtpfatt) * MAXNATTR);

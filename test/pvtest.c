@@ -6,11 +6,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "hdf.h"
-
-#define RTPDEF
 #include "rtp.h"
 #include "pvfnx.h"
-
+#include "rtpfnx.h"
 
 main (int argc, char *argv[]) {
 
@@ -161,7 +159,7 @@ main (int argc, char *argv[]) {
   */
   pvread2(vprof_id, 2, (char *) &prof2[0]);
 
-  dump_pstr(&head2, &prof2);
+  dump_pstr(&head2, &prof2[0]);
 
   pvread3(vprof_id);
   pvread3(vhead_id);
