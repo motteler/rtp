@@ -60,8 +60,8 @@ main (int argc, char *argv[]) {
     prof1[k].spres = 1000;
     prof1[k].efreq[0] = 700; prof1[k].efreq[1] = 1400;
     prof1[k].emis[0] = .95;  prof1[k].emis[1] = .96;
-    prof1[k].rho[0] = .5;    prof1[k].rho[1] = .6;
-    prof1[k].nlevs = 3;
+    prof1[k].rho[0] = .05;    prof1[k].rho[1] = .04;
+    prof1[k].nlevs = 4;
 
     for (j=0; j < head1.mlevs; j++) {
       prof1[k].plevs[j] = j * 10 + 1;

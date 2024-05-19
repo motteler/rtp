@@ -18,7 +18,7 @@ RTPLIB  = -L$(RTPHOME)/lib -lrtp	# RTP C and F77 library
 # Build Targets
 # -------------
 
-all: rtpsubset rtpdump install
+all: rtpinfo rtpdump install
 
 # ----------------
 # rtp dump utility

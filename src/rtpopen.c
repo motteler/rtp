@@ -44,6 +44,7 @@ DISCUSSION
 
 #include <stdio.h>
 #include "rtp.h"
+#include "rtpdef.h"
 #include "rtpfnx.h"
 
 int rtpopen(char *fname,               /* RTP file name            IN     */

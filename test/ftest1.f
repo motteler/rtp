@@ -91,6 +91,8 @@ c
         prof.plevs(3) = 12
         prof.plevs(4) = 13
         prof.plevs(5) = 14
+        prof.plevs(6) = 15
+        prof.plevs(7) = 16
         prof.plevs(8) = 20
 
         prof.ptemp(1) = 280

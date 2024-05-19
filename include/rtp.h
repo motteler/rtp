@@ -1,15 +1,14 @@
 
-/* RTP Fortran compatibility header and profile structures
- * Version 2.01
+/* RTP parameters, header, and profile structures
+ *
  * The C and Fortran structure definitions and the C field "flists"
  * giving string names to fields must all match exactly.  Also, the
  * #define constants given below should match those in the Fortran
  * parameter declarations.
  *
- * Note: total record size for header or profile may not exceed 50 kB
- *
  * H. Motteler
  * 5 Mar 02
+ *
  * Update: 20 October 2011, Scott Hannon - change prof.calflag and
  *    prof.pnote from DFNT_UCHAR8 and DFNT_CHAR8 respectively to
  *    DFNT_UINT8 for both.  The C declaration of pnote was changed
@@ -25,7 +24,7 @@
 
 /* set the library version 
  */
-#define VERSION "RTP version 2.01, 20 Oct 2011"
+#define VERSION "RTP version 2.04, 18 May 2024"
 
 /* --------------
  * RTP parameters 
@@ -74,12 +73,10 @@
 #define MAXCALF    (((MAXCHAN-1)/4+1)*4)
 #define MAXPN4     (((MAXPNOTE-1)/4+1)*4)
 
-
 /* ----------------
  * header structure
  * ----------------
  */
-
 struct rtp_head {
 
   /* profile data (7 fields)
@@ -115,59 +112,14 @@ struct rtp_head {
   int32   itype;        	/* user-defined integer                	*/ 
 };
 
-/* -----------------
- * header field list
- * ----------------- 
- */
-
-/* define the header field list ("flist")
- *
- * sizes and HDF types must match structure fields exactly;
- */
-struct FLIST hfield[] = {
-
-  /* profile data (7 fields) */
-  "ptype",   DFNT_INT32,    1,
-  "pfields", DFNT_INT32,    1,
-  "pmin",    DFNT_FLOAT32,  1,
-  "pmax",    DFNT_FLOAT32,  1,
-  "ngas",    DFNT_INT32,    1,
-  "glist",   DFNT_INT32,    MAXGAS,
-  "gunit",   DFNT_INT32,    MAXGAS,
-
-  /* radiance data (7 fields) */
-  "pltfid",  DFNT_INT32,    1,
-  "instid",  DFNT_INT32,    1,
-  "nchan",   DFNT_INT32,    1,
-  "ichan",   DFNT_INT32,    MAXCHAN,
-  "vchan",   DFNT_FLOAT32,  MAXCHAN,
-  "vcmin",   DFNT_FLOAT32,  1,
-  "vcmax",   DFNT_FLOAT32,  1,
-
-  /* max profile size fields (2 fields) 
-   * these fields are not saved explicitly in the HDF file */
-  "memis",   DFNT_INT32,    1,
-  "mlevs",   DFNT_INT32,    1,
-
-  /* user-defined fields (2 fields) */
-  "iudef",   DFNT_INT32,    MAXIUDEF,
-  "itype",   DFNT_INT32,    1
-};
-
-/* declare the header field list as an extern 
-*/
-/* extern struct FLIST hfield[]; */
-
 /* specify the number of header fields 
  */
 #define NHFIELD 18
-
 
 /* -----------------
  * profile structure
  * -----------------
  */
-
 struct rtp_prof {
 
   /* profile location data (3 fields) */
@@ -238,12 +190,13 @@ struct rtp_prof {
   float32 sundist;		/* sun-Earth distance		*/
   float32 glint;		/* sun glint distance 		*/
 
-  /* observed radiance data (7 fields) */
+  /* observed radiance data (3 fields) */
   float32 rlat;           	/* obs rad lat.         	*/
   float32 rlon;           	/* obs rad lon.         	*/
   /* int32   rfill; */		/* align rtime on 8 byte bndry	*/
   float64 rtime;          	/* radiance obs time    	*/
 
+  /* observation indices (4 fields) */
   int32   findex;		/* file (granule) index		*/
   int32   atrack;		/* along-track index		*/
   int32   xtrack;     		/* cross-track index		*/
@@ -265,128 +218,14 @@ struct rtp_prof {
   int32   itype;                /* user-defined integer         */
 };
 
-/* ------------------
- * profile field list
- * ------------------ 
- */
-
-/* define the profile field list ("flist")
- *
- * sizes and HDF types must match structure fields exactly;
- */
-struct FLIST pfield[] = {
-
-  /* profile location data (3 fields) */
-  "plat",     DFNT_FLOAT32,  1,
-  "plon",     DFNT_FLOAT32,  1,
-  "ptime",    DFNT_FLOAT64,  1,
-
-  /* surface data (10 fields) */
-  "stemp",    DFNT_FLOAT32,  1,
-  "salti",    DFNT_FLOAT32,  1,
-  "spres",    DFNT_FLOAT32,  1,
-  "landfrac", DFNT_FLOAT32,  1,
-  "landtype", DFNT_INT32,    1,
-  "wspeed",   DFNT_FLOAT32,  1,
-  "nemis",    DFNT_INT32,    1,
-  "efreq",    DFNT_FLOAT32,  MAXEMIS,
-  "emis",     DFNT_FLOAT32,  MAXEMIS,
-  "rho",      DFNT_FLOAT32,  MAXEMIS,
-
-  /* atmospheric data (9 fields) */
-  "nlevs",    DFNT_INT32,    1,
-  "plevs",    DFNT_FLOAT32,  MAXLEV,
-  "palts",    DFNT_FLOAT32,  MAXLEV,
-  "ptemp",    DFNT_FLOAT32,  MAXLEV,
-  "gamnt",    DFNT_FLOAT32,  MAXGAS*MAXLEV,
-  "gtotal",   DFNT_FLOAT32,  MAXGAS,
-  "gxover",   DFNT_FLOAT32,  MAXGAS,
-  "txover",   DFNT_FLOAT32,  1,
-  "co2ppm",   DFNT_FLOAT32,  1,
-
-  /* clear flag (1 field) */
-  "clrflag",  DFNT_INT32,    1,
-
-  /* cloud1 data (9 fields) */
-  "ctype",    DFNT_INT32,    1,
-  "cfrac",    DFNT_FLOAT32,  1,
-  "cemis",    DFNT_FLOAT32,  MAXEMIS,
-  "crho",     DFNT_FLOAT32,  MAXEMIS,
-  "cprtop",   DFNT_FLOAT32,  1,
-  "cprbot",   DFNT_FLOAT32,  1,
-  "cngwat",   DFNT_FLOAT32,  1,
-  "cpsize",   DFNT_FLOAT32,  1,
-  "cstemp",   DFNT_FLOAT32,  1,
-
-  /* cloud2 data (10 fields) */
-  "ctype2",   DFNT_INT32,    1,
-  "cfrac2",   DFNT_FLOAT32,  1,
-  "cemis2",   DFNT_FLOAT32,  MAXEMIS,
-  "crho2",    DFNT_FLOAT32,  MAXEMIS,
-  "cprtop2",  DFNT_FLOAT32,  1,
-  "cprbot2",  DFNT_FLOAT32,  1,
-  "cngwat2",  DFNT_FLOAT32,  1,
-  "cpsize2",  DFNT_FLOAT32,  1,
-  "cstemp2",  DFNT_FLOAT32,  1,
-  "cfrac12",  DFNT_FLOAT32,  1,
-
-  /* radiance orientation data (6 fields) */
-  "pobs",     DFNT_FLOAT32,  1,
-  "zobs",     DFNT_FLOAT32,  1,
-  "upwell",   DFNT_INT32,    1,
-  "scanang",  DFNT_FLOAT32,  1,
-  "satzen",   DFNT_FLOAT32,  1,
-  "satazi",   DFNT_FLOAT32,  1,
-
-  /* sun data (4 fields) */
-  "solzen",   DFNT_FLOAT32,  1,
-  "solazi",   DFNT_FLOAT32,  1,
-  "sundist",  DFNT_FLOAT32,  1,
-  "glint",    DFNT_FLOAT32,  1,
-
-  /* observed radiance data (7 fields) */
-  "rlat",     DFNT_FLOAT32,  1,
-  "rlon",     DFNT_FLOAT32,  1,
-  /*"rfill",  DFNT_INT32,    1, */
-  "rtime",    DFNT_FLOAT64,  1,
-  "findex",   DFNT_INT32,    1,
-  "atrack",   DFNT_INT32,    1,
-  "xtrack",   DFNT_INT32,    1,
-  "ifov",     DFNT_INT32,    1,
-
-  /* observed radiance data (4 fields) */
-  "robs1",    DFNT_FLOAT32,  MAXCHAN,
-  "calflag",  DFNT_UINT8,    ((MAXCHAN-1)/4+1)*4,
-  "robsqual", DFNT_INT32,    1,
-  "freqcal",  DFNT_FLOAT32,  1,
-
-  /* calculated radiance data (1 field) */
-  "rcalc",    DFNT_FLOAT32,  MAXCHAN,
-
-  /* user-defined fields (4 fields) */
-  "pnote",    DFNT_UINT8,    ((MAXPNOTE-1)/4+1)*4,
-  "udef",     DFNT_FLOAT32,  MAXUDEF,
-  "iudef",    DFNT_INT32,    MAXIUDEF,
-  "itype",    DFNT_INT32,    1
-};
-
-/* declare the profile field list as an extern
- */
-/* extern struct FLIST pfield[]; */
-
 /* specify the number of profile fields 
  */
-/* #define NPFIELD (sizeof(pfield) / (sizeof(char*) + sizeof(int)*2)) */
 #define NPFIELD 68
-
 
 /* ---------------------------
  * Fortran attribute structure
  * ---------------------------
- */
-
-/* 
- * attribute structure (for fortran attributes)
+ *
  * this must match the fortran structure RTPATTR 
  */
 struct rtpfatt {
@@ -394,7 +233,6 @@ struct rtpfatt {
   char	aname[MAXANAME];
   char	atext[MAXATEXT];
 };
-
 
 /* ---------------------
  * RTP channel structure
@@ -410,16 +248,12 @@ struct rtp_chan {
   struct FLIST (*flist)[];  /* pointer field list (for testing) */
 };
 
-/* define the open channel structure
+/* ---------------------
+ * external declarations
+ * ---------------------
  */
-struct rtp_chan chan[MAXOPEN];
-
-/* oflag should be initialized with MAXOPEN zeros 
- */
-int oflag[] = {0,0,0,0,0,0,0,0};
-
-/* declare the channel structures as externs
- */
-/* extern struct rtp_chan chan[]; */
-/* extern int oflag[]; */
+extern struct FLIST hfield[];
+extern struct FLIST pfield[];
+extern struct rtp_chan chan[];
+extern int oflag[];
 
