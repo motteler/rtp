@@ -83,6 +83,12 @@ struct FLIST pfield[] = {
   /* clear flag (1 field) */
   "clrflag",  DFNT_INT32,    1,
 
+  /* cloud data (4 fields) */
+  "tcc",      DFNT_FLOAT32,  1,
+  "cc",       DFNT_FLOAT32,  MAXLEV, 
+  "ciwc",     DFNT_FLOAT32,  MAXLEV, 
+  "clwc",     DFNT_FLOAT32,  MAXLEV, 
+
   /* cloud1 data (9 fields) */
   "ctype",    DFNT_INT32,    1,
   "cfrac",    DFNT_FLOAT32,  1,

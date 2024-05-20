@@ -153,6 +153,12 @@ struct rtp_prof {
   /* clear flag (1 field) */
   int32   clrflag;		/* clear flag/code		*/
 
+  /* cloud data (4 fields) */
+  float32     tcc;              /* total cloud cover            */
+  float32     cc[MAXLEV];       /* cloud cover                  */
+  float32     ciwc[MAXLEV];     /* cloud ice water content      */
+  float32     clwc[MAXLEV];     /* cloud liq water content      */
+
   /* cloud1 data (9 fields) */
   int32   ctype;                /* cloud type code		*/
   float32 cfrac; 	        /* cloud fraction       	*/
@@ -220,7 +226,7 @@ struct rtp_prof {
 
 /* specify the number of profile fields 
  */
-#define NPFIELD 68
+#define NPFIELD 72
 
 /* ---------------------------
  * Fortran attribute structure

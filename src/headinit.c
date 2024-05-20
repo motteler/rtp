@@ -1,5 +1,5 @@
 
-/* initialize an RTP header structure Version 2.01
+/* initialize an RTP header structure
  */
 
 #include "rtp.h"

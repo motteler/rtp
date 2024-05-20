@@ -17,19 +17,16 @@ c
         integer status, rchan
         character*18 fname, mode
         character*64 version
-
 c
 c return our version string
 c
         version = ''
         call rtpvers(version)
         print *, version
-
 c
 c initialize header and profile fields with sensible values
 c
        call rtpinit(head, prof)
-
 c
 c set some sample header attributes
 c
@@ -89,18 +86,23 @@ c
         prof.plevs(1) = 10
         prof.plevs(2) = 11
         prof.plevs(3) = 12
-        prof.plevs(4) = 13
-        prof.plevs(5) = 14
-        prof.plevs(6) = 15
-        prof.plevs(7) = 16
         prof.plevs(8) = 20
 
         prof.ptemp(1) = 280
         prof.ptemp(2) = 281
         prof.ptemp(3) = 282
-        prof.ptemp(4) = 283
-        prof.ptemp(5) = 284
         prof.ptemp(8) = 300
+
+        prof.txover = 280
+        prof.co2ppm = 410
+        prof.ctype = 6
+
+        prof.tcc = 0.87
+        prof.cc(1) = 0.6
+        prof.cc(2) = 0.61
+        prof.cc(8) = 0.67
+        prof.ctype = 42
+        prof.cfrac = 0.3
 c
 c create the file, write the attributes, write the (mostly unfilled) 
 c profile structure, and close the file

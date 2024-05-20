@@ -2,7 +2,7 @@
 /* rtpwrite1 -- RTP write setup
  * 
  * returns -1 on error, 0 on success
- * Version 2.01
+ * 
  * rtpwrite1 starts with field lists for the static Fortran header
  * and profile structures, and uses values in the header size fields
  * (memis, mlevs, ngas, nchan, and also pfields) to build new,
@@ -25,7 +25,6 @@
 
 #include <stdlib.h>
 #include "hdf.h"
-
 #include "rtp.h"
 #include "pvfnx.h"
 #include "rtpfnx.h"
@@ -183,6 +182,9 @@ int rtpwrite1(char *fname,		/* RTP file name 	     IN  */
     if (strcmp((*pvf)[i].fname, "plevs")==0 ||
 	strcmp((*pvf)[i].fname, "palts")==0 ||
 	strcmp((*pvf)[i].fname, "ptemp")==0 ||
+	strcmp((*pvf)[i].fname, "cc")==0 ||
+      	strcmp((*pvf)[i].fname, "ciwc")==0 ||
+	strcmp((*pvf)[i].fname, "clwc")==0 ||
 	strncmp((*pvf)[i].fname, "gas_", 4)==0)
       (*pvf)[i].order = head->mlevs;
 

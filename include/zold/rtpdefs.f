@@ -1,19 +1,22 @@
 
-!
-!     RTP Fortran API structures and parameters
-!
-!     The Fortran structures defined here, RTPHEAD, RTPPROF, and
-!     RTPATTR, must match the corresponding C structures rtp_head,
-!     rtp_prof, and rtpfatt, and the parameters set below must have
-!     the same values as the corresponding C #define parameters.
-!
-!     See rtp.h and rtpspec.pdf for more information on the fields
-!     defined below.
-!
+c
+c     RTP Fortran API structures and parameters
+c     Version 2.01
+c     The Fortran structures defined here, RTPHEAD, RTPPROF, and
+c     RTPATTR, must match the corresponding C structures rtp_head,
+c     rtp_prof, and rtpfatt, and the parameters set below must have
+c     the same values as the corresponding C #define parameters.
+c
+c     Note: total record size for header or profile records
+c     may not exceed 50 kB
+c
+c     See rtp.h and rtpspec.pdf for more information on the fields
+c     defined below.
+c
 
-! --------------
-! RTP parameters
-! --------------
+c --------------
+c RTP parameters
+c --------------
 
         integer BAD         ! value to be used if no data
         integer LEVPRO      ! levels-type profile flag
@@ -78,10 +81,10 @@
         parameter ( MAXATEXT  =  1024 )
 
 
-! --------------------
-! RTP header structure
-! --------------------
-!
+c --------------------
+c RTP header structure
+c --------------------
+c
         STRUCTURE /RTPHEAD/
 
 	  ! profile data
@@ -114,10 +117,10 @@
         END STRUCTURE
 
 
-! ---------------------
-! RTP profile structure
-! ---------------------
-!  
+c ---------------------
+c RTP profile structure
+c ---------------------
+c  
         STRUCTURE /RTPPROF/
 
 	  ! profile location/time
@@ -151,12 +154,6 @@
           ! clear flag/code
           integer*4  clrflag              ! clear flag/code
                 
-          ! cloud data
-          real*4     tcc                  ! total cloud cover
-          real*4     cc(MAXLEV)           ! cloud cover
-          real*4     ciwc(MAXLEV)         ! cloud ice water content
-          real*4     clwc(MAXLEV)         ! cloud liq water content       
-
           ! cloud1 data
           integer*4  ctype                ! cloud type code
           real*4     cfrac                ! cloud fraction 
@@ -197,7 +194,7 @@
           ! observation location/time
           real*4     rlat                 ! radiance obs lat.
           real*4     rlon                 ! radiance obs lon.
-!         integer*4  rfill                ! align rtime on 8 byte bndry
+C         integer*4  rfill                ! align rtime on 8 byte bndry
           real*8     rtime                ! radiance obs time
 
           ! observation indices
@@ -224,23 +221,23 @@
         END STRUCTURE
 
 
-! -----------------------
-! RTP attribute structure
-! -----------------------
-!
-! fname is the name of the field the attribute is to be associated
-!       with, 'header' for a general header attribute, or 'profiles'
-!       for a general profile attribute.  Its size declaration should
-!       be the same as the parameter MAXVNAME.
-!
-! aname is the attribute name, e.g., 'units' for a field attribute, 
-!       or 'TITLE', for a general header attribute.  Its size should
-!       also be the same as the parameter MAXANAME.
-!
-! atext is the attribute text, 'e.g., '48 Fitting Profiles' might be
-!       the atext of the header 'TITLE' attribute.  Its size should be 
-!       the same as the parameter MAXATEXT.
-!
+c -----------------------
+c RTP attribute structure
+c -----------------------
+c
+c fname is the name of the field the attribute is to be associated
+c       with, 'header' for a general header attribute, or 'profiles'
+c       for a general profile attribute.  Its size declaration should
+c       be the same as the parameter MAXVNAME.
+c
+c aname is the attribute name, e.g., 'units' for a field attribute, 
+c       or 'TITLE', for a general header attribute.  Its size should
+c       also be the same as the parameter MAXANAME.
+c
+c atext is the attribute text, 'e.g., '48 Fitting Profiles' might be
+c       the atext of the header 'TITLE' attribute.  Its size should be 
+c       the same as the parameter MAXATEXT.
+c
         STRUCTURE /RTPATTR/
 
           character*64 fname	! associated field name

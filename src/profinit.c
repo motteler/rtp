@@ -1,5 +1,5 @@
 
-/* initialize an RTP profile structure Version 2.01
+/* initialize an RTP profile structure
  */
 
 #include "rtp.h"
@@ -37,6 +37,12 @@ void profinit(struct rtp_prof *prof) {
 
   /* clear flag data */
   prof->clrflag         = BAD;
+
+  /* cloud data */
+  prof->tcc             = BAD;
+  prof->cc[0]           = BAD;
+  prof->ciwc[0]         = BAD;
+  prof->clwc[0]         = BAD;
 
   /* cloud1 data */
   prof->ctype           = BAD;

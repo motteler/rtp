@@ -1,5 +1,5 @@
 
-/* dump the RTP header structure Version 2.01 */
+/* dump the RTP header structure */
 
 #include <stdio.h>
 #include "rtp.h"

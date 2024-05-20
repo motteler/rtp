@@ -2,7 +2,6 @@
 /* rtpread1 -- RTP read setup
  *
  * returns -1 on error, 0 on success
- * Version 2.01
  */
 
 #include "rtp.h"

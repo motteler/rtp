@@ -2,7 +2,6 @@
 /* rtphcheck -- sanity check for RTP header values
  * 
  * returns -1 on error, 0 on success
- * Version 2.01
  */
 
 #include <stdlib.h>

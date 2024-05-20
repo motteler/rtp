@@ -1,6 +1,6 @@
 
 /* dump_pstr -- dump an RTP profile structure
- * Version 2.01
+ *
  * note: this routine is intended mainly for test purposes, only a
  * subset of the profile fields are printed out.
  *
