@@ -30,20 +30,27 @@ main (int argc, char *argv[]) {
   headinit(&head1);
   npro = 2;
 
-  head1.memis = 2;
-  head1.mlevs  = 4;
+  head1.memis = 10;
+  head1.mlevs  = 80;
 
   head1.ptype = LEVPRO;			/* level profile */
   head1.pfields = PROFBIT + IROBSVBIT;  /* profile + obs radiances */
+  head1.pfields = PROFBIT + IROBSVBIT + IRCALCBIT;
 
-  head1.ngas  = 2;
-  head1.pmin  = 10;
-  head1.pmax  = 1000;
-  head1.glist[0] = 1; head1.glist[1] = 3;
+  head1.pmin  = 0.01;
+  head1.pmax  = 1100;
 
-  head1.nchan = 3;
-  head1.vchan[0] = 700; head1.vchan[1] = 701; head1.vchan[2] = 702;
-  head1.ichan[0] = 10; head1.ichan[1] = 11; head1.ichan[2] = 12;
+  head1.ngas  = 6;
+  for (i=0; i < head1.ngas; i++) {
+    head1.glist[i] = 2*i+1;
+    head1.gunit[i] = 1;
+  }
+
+  head1.nchan = 200;
+  for (i=0; i < head1.nchan; i++) {
+    head1.vchan[i] = 500 + i/4.0;
+    head1.ichan[i] = i;
+  }
 
   /* fill in some profile values
    */
@@ -53,7 +60,7 @@ main (int argc, char *argv[]) {
 
     prof1[k].plat = 32;
     prof1[k].plon = 55;
-    prof1[k].ptime = 30001;
+    prof1[k].ptime = 31536000;
 
     prof1[k].stemp = 300+k;
     prof1[k].salti = 10;
@@ -61,7 +68,7 @@ main (int argc, char *argv[]) {
     prof1[k].efreq[0] = 700; prof1[k].efreq[1] = 1400;
     prof1[k].emis[0] = .95;  prof1[k].emis[1] = .96;
     prof1[k].rho[0] = .05;    prof1[k].rho[1] = .04;
-    prof1[k].nlevs = 4;
+    prof1[k].nlevs = head1.mlevs;
 
     for (j=0; j < head1.mlevs; j++) {
       prof1[k].plevs[j] = j * 10 + 1;
@@ -83,14 +90,23 @@ main (int argc, char *argv[]) {
     prof1[k].scanang = 42;
     prof1[k].satzen = 45;
 
-    prof1[k].rtime = 30099;
+    prof1[k].rtime = 31536000;
 
     for (i=0; i < head1.nchan; i++) {
-      prof1[k].robs1[i] = .02;
+      prof1[k].robs1[i] = .03;
       prof1[k].calflag[i] = 254;
     }
+    prof1[k].robs1[head1.nchan-1] = .99;
+
     prof1[k].robsqual = 1;
     prof1[k].freqcal = -13.5;
+
+    for (i=0; i < head1.nchan; i++) {
+      prof1[k].rcalc[i] = .05;
+    }
+    prof1[k].rcalc[head1.nchan-1] = .99;
+
+    prof1[k].udef[0] = 42; prof1[k].udef[1] = 43; 
 
     strcpy((char *) prof1[k].pnote, "rtptest1 comment string");
   }

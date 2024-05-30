@@ -197,7 +197,7 @@
           ! observation location/time
           real*4     rlat                 ! radiance obs lat.
           real*4     rlon                 ! radiance obs lon.
-!         integer*4  rfill                ! align rtime on 8 byte bndry
+          integer*4  rfill                ! align rtime on 8 byte bndry
           real*8     rtime                ! radiance obs time
 
           ! observation indices

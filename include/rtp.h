@@ -199,7 +199,7 @@ struct rtp_prof {
   /* observed radiance data (3 fields) */
   float32 rlat;           	/* obs rad lat.         	*/
   float32 rlon;           	/* obs rad lon.         	*/
-  /* int32   rfill; */		/* align rtime on 8 byte bndry	*/
+  int32   rfill;		/* align rtime on 8 byte bndry	*/
   float64 rtime;          	/* radiance obs time    	*/
 
   /* observation indices (4 fields) */

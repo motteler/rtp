@@ -129,7 +129,7 @@ struct FLIST pfield[] = {
   /* observed radiance data (7 fields) */
   "rlat",     DFNT_FLOAT32,  1,
   "rlon",     DFNT_FLOAT32,  1,
-  /*"rfill",  DFNT_INT32,    1, */
+  "rfill",    DFNT_INT32,    1,
   "rtime",    DFNT_FLOAT64,  1,
   "findex",   DFNT_INT32,    1,
   "atrack",   DFNT_INT32,    1,
@@ -138,7 +138,7 @@ struct FLIST pfield[] = {
 
   /* observed radiance data (4 fields) */
   "robs1",    DFNT_FLOAT32,  MAXCHAN,
-  "calflag",  DFNT_UINT8,    ((MAXCHAN-1)/4+1)*4,
+  "calflag",  DFNT_UINT8,    MAXCALF,
   "robsqual", DFNT_INT32,    1,
   "freqcal",  DFNT_FLOAT32,  1,
 
@@ -146,7 +146,7 @@ struct FLIST pfield[] = {
   "rcalc",    DFNT_FLOAT32,  MAXCHAN,
 
   /* user-defined fields (4 fields) */
-  "pnote",    DFNT_UINT8,    ((MAXPNOTE-1)/4+1)*4,
+  "pnote",    DFNT_UINT8,    MAXPN4,
   "udef",     DFNT_FLOAT32,  MAXUDEF,
   "iudef",    DFNT_INT32,    MAXIUDEF,
   "itype",    DFNT_INT32,    1

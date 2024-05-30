@@ -103,6 +103,10 @@ c
         prof.cc(8) = 0.67
         prof.ctype = 42
         prof.cfrac = 0.3
+
+        prof.pnote = 'tuna from luna'//char(0)
+        prof.udef(1) = 42
+        prof.udef(2) = 43
 c
 c create the file, write the attributes, write the (mostly unfilled) 
 c profile structure, and close the file
