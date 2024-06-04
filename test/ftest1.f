@@ -14,7 +14,7 @@ c
 c 
 c other variables
 c
-        integer status, rchan
+        integer status, rchan, i
         character*18 fname, mode
         character*64 version
 c
@@ -70,11 +70,11 @@ c
 c just set a few demo values, for this test
 c
         head.ptype = LEVPRO
-        head.pfields = PROFBIT
+        head.pfields = PROFBIT + IRCALCBIT
         head.ngas = 2
         head.glist(1) = 1
         head.glist(2) = 3
-        head.nchan = 0
+        head.nchan = 10
 
         head.memis = 0
         head.mlevs = 8
@@ -104,6 +104,11 @@ c
         prof.ctype = 42
         prof.cfrac = 0.3
 
+        do i = 1, head.nchan
+          prof.rcalc(i) = 0.05
+        end do
+        prof.rcalc(head.nchan) = 0.99
+
         prof.pnote = 'tuna from luna'//char(0)
         prof.udef(1) = 42
         prof.udef(2) = 43
@@ -122,6 +127,9 @@ c
 
         status = rtpclose(rchan)
         print *, 'close status = ', status
+
+        print *, 'MAXCALF = ', MAXCALF
+        print *, 'MAXPN4 = ', MAXPN4 
 
         stop
         end

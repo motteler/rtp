@@ -2,69 +2,38 @@
                 RTP C and Fortran Tools
                 -----------------------
 
-                H. Motteler and S. Hannon
+               H. Motteler and S. Hannon
 
 
 Introduction
 -------------
 
 This package contains procedures to read and write RTP (Radiative
-Transfer Profile) format files from C and Fortran.  See rtpspec.pdf
-in the "doc" directory for more info on the RTP format and on the
-Fortran and C programming interface.  Matlab RTP tools are included
-in the "h4tools" directory; which has its own documentation.
+Transfer Profile) format files from C and Fortran.  The format was
+originally intended for the calculation of upwelling radiances from
+atmospheric profiles, and was extended to include radiance data and
+used for statistical applications.  It is based on the HDF4 Vdata
+type, an array of records.  See rtpspec.pdf in the rtp/doc directory
+for more information on the format and the Fortran and C programming
+interface.  Matlab RTP tools are available in matlib/h4tools, in a
+separate repo, git@github.com:strow/matlib.
 
 
 Building the Distribution
 --------------------------
 
-To build the RTP package you need to have HDF 4 installed; this
-is available from The HDF Group at
-    http://www.hdfgroup.org/
-RTP has been tested on Linux, SGI, and Sun systems, with HDF4.1r3,
-r4, and r5; 64 bit IRIX may require r4 or r5.
+To build the RTP package you need to have HDF 4 installed.  This is
+available from The HDF Group at http://www.hdfgroup.org/.  To build
+the RTP library and utilities, edit the top level Makefile to set
+HDFHOME to the local HDF4 installation.  You may also need to change
+some of the compiler parameters.  Then type "make".  The top level
+Makefile will enter each of the subdirectories src, test, and utils.
 
-To build the RTP library and utilities, untar the distribution
-and edit the top level Makefile to set HDFHOME to the local HDF4
-installation.  You may also need to change some of the compiler
-parameters.  Then type "make"; the top level makefile will enter
-each of the subdirectories src, test, and utils.
-
-If the library builds successfully, cd into the "test" subdir
-and run the test programs: rtptest1, rtptest2, pvtest, ftest1,
-and ftest2; they do not require any user input on the command
-line. The programs display some info about the codes ability
-to read and write data to RTP files. Error messages will appear
-if something goes wrong.  There are sample screen dump files
-in the test subdir for comparison to your screen output.
-
-Include files:
--------------
-
-The include subdir contains the include files used by the library
-and test and utils programs.  If you chose to increase some of the
-array maximum sizes in rtp.h and rtpdefs.f, you need to be be aware
-that there is a 51200 byte limit on the total record size of the
-header and profile records. This limit is an HDF4 limitation and
-there is no getting around it. You can check the sizes of the header
-and profile records using test program "rtpsize".  When making
-changes, be careful to keep rtpdefs.f in agreement with rtp.h.
-
-As delivered the "standard" include files are set up for
-MAXCHAN=4231 and MAXGAS=16.  These values were selected for
-use with IASI, CrIS, and AIRS fast radiative transfer codes.
-It is impossible to fit all 8461 IASI channels into one RTP,
-so this MAXCHAN was chosen to allow IASI to be split into
-two RTP files. 
-
-An alternate set of "g80" include files are also contained in
-the include directory with MAXGAS=80 and MAXCHAN=800.  The larger
-value of MAXGAS may be useful for some applications, but the
-smaller value of MAXCHAN makes it inconvenient for use with most
-hyperspectral instruments.  To compile using the "g80" variant,
-delete the existing symbolic links for the "standard" include
-files and replace with with new links for the "g80" files.
-
+If the build is successfull cd into"test" and run the rtptest1,
+rtptest2, pvtest, ftest1, and ftest2.  These are good as sanity but
+checks, but are not comprehensive tests.  More exhaustive testing
+can be done by checking the interoperability of the C/Fortran and
+Matlab packages.
 
 
 Reading and Writing RTP Data

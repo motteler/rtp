@@ -32,14 +32,16 @@ RTPHOME = ..
 # -------------------
 
 CC = icc
-CFLAGS = -O2
+CFLAGS = -O2 -fpack-struct
 
 # ------------------------
 # Fortran compiler options
 # ------------------------
 
 F77 = ifort
-FFLAGS = -extend-source 132 -check bounds -O2
+# FFLAGS = -extend-source 132 -check bounds -O2 -align records
+# FFLAGS = -extend-source 132 -check bounds -O2 -align norecords
+FFLAGS = -extend-source 132 -check bounds -O2 -align rec4byte
 
 # -------------------------------------------
 # pass options to the subdirectory makefiles

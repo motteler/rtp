@@ -1,4 +1,3 @@
-
 !
 !     RTP Fortran API structures and parameters
 !
@@ -40,8 +39,8 @@
         integer MAXANAME    ! max num of chars in attribute name
         integer MAXATEXT    ! max num of chars in attribute text
 
-        integer MAXCALF     ! max cal flag bytes, ceil(MAXCHAN/4)*4
-        integer MAXPN4      ! true max for pnote, ceil(MAXPNOTE/4)*4
+        integer MAXCALF     ! max cal flag bytes, derived parameter
+        integer MAXPN4      ! true max for pnote, derived parameter
 
         ! the following parameters must match the values set in rtp.h
         !
@@ -67,6 +66,7 @@
         parameter ( MAXOPEN   =    8 )
         parameter ( MAXNATTR  =   32 )
 
+        ! derived parameters (bumps up parameter to a multiple of 4)
         parameter ( MAXCALF   = ((MAXCHAN-1)/4+1)*4 )
         parameter ( MAXPN4    = ((MAXPNOTE-1)/4+1)*4 )
 
@@ -197,7 +197,7 @@
           ! observation location/time
           real*4     rlat                 ! radiance obs lat.
           real*4     rlon                 ! radiance obs lon.
-          integer*4  rfill                ! align rtime on 8 byte bndry
+!         integer*4  rfill                ! align rtime on 8 byte bndry
           real*8     rtime                ! radiance obs time
 
           ! observation indices

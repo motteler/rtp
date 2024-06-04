@@ -162,6 +162,8 @@ main (int argc, char *argv[]) {
   dump_pstr(&head2, &prof2[0]);
 
   printf("head.mlevs = %d\n", head2.mlevs);
+  printf("MAXCALF = %d\n", MAXCALF);
+  printf("MAXPN4 = %d\n", MAXPN4);
 
   return(0);
 }

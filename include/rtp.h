@@ -68,7 +68,7 @@
 #define MAXOPEN     8	/* max number of open RTP channels 	*/
 #define MAXNATTR   32   /* max number of attributes per file	*/
 
-/* derived parameters
+/* derived parameters (bumps up parameter to a multiple of 4)
  */
 #define MAXCALF    (((MAXCHAN-1)/4+1)*4)
 #define MAXPN4     (((MAXPNOTE-1)/4+1)*4)
@@ -196,10 +196,10 @@ struct rtp_prof {
   float32 sundist;		/* sun-Earth distance		*/
   float32 glint;		/* sun glint distance 		*/
 
-  /* observed radiance data (3 fields) */
+  /* observed radiance data (4 fields) */
   float32 rlat;           	/* obs rad lat.         	*/
   float32 rlon;           	/* obs rad lon.         	*/
-  int32   rfill;		/* align rtime on 8 byte bndry	*/
+  /*  int32   rfill;		/* align rtime on 8 byte bndry	*/
   float64 rtime;          	/* radiance obs time    	*/
 
   /* observation indices (4 fields) */
