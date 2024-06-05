@@ -129,7 +129,7 @@ struct FLIST pfield[] = {
   /* observed radiance data (8 fields) */
   "rlat",     DFNT_FLOAT32,  1,
   "rlon",     DFNT_FLOAT32,  1,
-  /*  "rfill",    DFNT_INT32,    1, */
+  "rfill",    DFNT_INT32,    1,
   "rtime",    DFNT_FLOAT64,  1,
   "findex",   DFNT_INT32,    1,
   "atrack",   DFNT_INT32,    1,

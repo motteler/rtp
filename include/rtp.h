@@ -24,7 +24,7 @@
 
 /* set the library version 
  */
-#define VERSION "RTP version 2.04, 18 May 2024"
+#define VERSION "RTP version 2.21, 18 May 2024"
 
 /* --------------
  * RTP parameters 
@@ -199,7 +199,7 @@ struct rtp_prof {
   /* observed radiance data (4 fields) */
   float32 rlat;           	/* obs rad lat.         	*/
   float32 rlon;           	/* obs rad lon.         	*/
-  /*  int32   rfill;		/* align rtime on 8 byte bndry	*/
+  int32   rfill;		/* align rtime on 8 byte bndry	*/
   float64 rtime;          	/* radiance obs time    	*/
 
   /* observation indices (4 fields) */
@@ -226,7 +226,7 @@ struct rtp_prof {
 
 /* specify the number of profile fields 
  */
-#define NPFIELD 72
+#define NPFIELD 73
 
 /* ---------------------------
  * Fortran attribute structure

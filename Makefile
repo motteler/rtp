@@ -32,16 +32,16 @@ RTPHOME = ..
 # -------------------
 
 CC = icc
-CFLAGS = -O2 -fpack-struct
+# CFLAGS = -O2 -fpack-struct
+CFLAGS = -O2
 
 # ------------------------
 # Fortran compiler options
 # ------------------------
 
 F77 = ifort
-# FFLAGS = -extend-source 132 -check bounds -O2 -align records
-# FFLAGS = -extend-source 132 -check bounds -O2 -align norecords
-FFLAGS = -extend-source 132 -check bounds -O2 -align rec4byte
+# FFLAGS = -extend-source 132 -check bounds -O2 -align rec8byte
+FFLAGS = -extend-source 132 -check bounds -O2
 
 # -------------------------------------------
 # pass options to the subdirectory makefiles
@@ -69,31 +69,4 @@ clean:
 	cd src && make clean
 	cd test && make clean
 	cd utils && make clean
-
-# -------------------------
-# make an RTP distribution
-# -------------------------
-#
-# "make dist" makes a distribution named by the current working
-# directory.  For example, if we are in the subdirectory rtpV201
-# "make dist" will clean things up and then create an rtpV201.tar 
-# in the parent directory that unpacks to rtpV201/<etc>.
-# 
-dist: clean
-	rm rtp.tar bin/* lib/* 2> /dev/null || true
-	rbase=`/bin/pwd`                && \
-	    rbase=`basename $${rbase}`  && \
-	    cd ..                       && \
-	    tar -cf $${rbase}.tar          \
-		$${rbase}/bin              \
-		$${rbase}/doc              \
-		$${rbase}/include          \
-		$${rbase}/lib              \
-		$${rbase}/Makefile         \
-		$${rbase}/README           \
-		$${rbase}/src              \
-		$${rbase}/test             \
-		$${rbase}/utils
-	@echo created `/bin/pwd`.tar
-	@echo "\"make all\" to rebuild the local distribution"
 
