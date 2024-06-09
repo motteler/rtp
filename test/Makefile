@@ -23,7 +23,7 @@ RTPLIB  = -L$(RTPHOME)/lib -lrtp	# RTP C and F77 library
 # Main target list
 # ----------------
 
-all: pvtest rtptest1 rtptest2 rtpsize ftest1 ftest2
+all: pvtest rtptest1 rtptest2 rtptest3 rtpsize ftest1 ftest2
 
 # -------------------------
 # rtpdump, pv and RTP tests
@@ -46,6 +46,12 @@ rtptest2: rtptest2.o
 	$(CC) $(CFLAGS) -o rtptest2 rtptest2.o $(RTPLIB) $(HDFLIB)
 rtptest2.o: rtptest2.c
 	$(CC) $(CFLAGS) -c rtptest2.c $(RTPINC) $(HDFINC)
+
+# RTP big size test
+rtptest3: rtptest3.o
+	$(CC) $(CFLAGS) -o rtptest3 rtptest3.o $(RTPLIB) $(HDFLIB)
+rtptest3.o: rtptest3.c
+	$(CC) $(CFLAGS) -c rtptest3.c $(RTPINC) $(HDFINC)
 
 # rtp size checks
 rtpsize: rtpsize.o 

@@ -58,7 +58,7 @@
 #define MAXGAS     16	/* max number of gases  		*/
 #define MAXGASID  303	/* max valid HITRAN gas ID 		*/
 #define MAXLEV    120	/* max number of levels or layers	*/
-#define MAXCHAN  4231	/* max number of chanels		*/
+#define MAXCHAN  8500	/* max number of chanels		*/
 #define MAXPNOTE   80   /* max profile comment string		*/ 
 #define MAXUDEF    20   /* max profile  udef values	        */
 #define MAXIUDEF   10   /* max profile and header iudef values	*/

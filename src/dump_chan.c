@@ -59,7 +59,7 @@ void dump_chan(int ci) {
     }
     else if ((*flist)[i].htype == DFNT_FLOAT64) {
       x = *((float64 *) s1);
-      sprintf(s2, "%8g", x);
+      sprintf(s2, "%8gf", x);
     }
     else if ( (*flist)[i].htype == DFNT_CHAR8 ) {
       strncpy(s2, &buf[p1[i]], 8);

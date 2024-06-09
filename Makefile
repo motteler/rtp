@@ -35,6 +35,9 @@ CC = icc
 # CFLAGS = -O2 -fpack-struct
 CFLAGS = -O2
 
+# CC = gcc
+# CFLAGS = -O2
+
 # ------------------------
 # Fortran compiler options
 # ------------------------
@@ -42,6 +45,9 @@ CFLAGS = -O2
 F77 = ifort
 # FFLAGS = -extend-source 132 -check bounds -O2 -align rec8byte
 FFLAGS = -extend-source 132 -check bounds -O2
+
+# F77 = gfortran
+# FFLAGS = -ffixed-line-length-none -fdec-structure
 
 # -------------------------------------------
 # pass options to the subdirectory makefiles
