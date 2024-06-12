@@ -1,18 +1,13 @@
 
-all: rtpspec.pdf rtpspec.html
-
-xdvi: rtpspec.dvi
-	xdvi rtpspec
-
-rtpspec.dvi: rtpspec.tex
-	latex rtpspec.tex
-
-rtpspec.html: rtpspec.tex
-	tth -e2 -a -i < rtpspec.tex > rtpspec.html
+all: rtpspec.pdf
 
 rtpspec.pdf: rtpspec.tex
-	pdflatex rtpspec.tex
+	pdflatex rtpspec.tex -interaction nonstopmode || \
+	rm rtpspec.pdf 2> /dev/null || true
+
+show: rtpspec.pdf
+	evince rtpspec.pdf > /dev/null 2>&1 &
 
 clean:
-	rm *.log *.aux *.dvi 2> /dev/null || true
+	rm *.log *.aux 2> /dev/null || true
 
