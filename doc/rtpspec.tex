@@ -1,58 +1,43 @@
-  <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
-           "http://www.w3.org/TR/REC-html40/loose.dtd"><HTML>
-<META NAME="GENERATOR" CONTENT="TtH 1.98">
 
-                                                                   
-<title>RTP Format Specification</title>
-<BODY BGCOLOR="#FFFFFF">
+\documentclass[11pt]{article}
 
+\title{{\bf RTP Format Specification\\
+                and\\
+        User's Guide}\bigskip \\
+        {Version 2.21}\bigskip \\ }
 
-<p>
+\author{Howard~E.~Motteler and Scott~Hannon}
 
-<title> {\bf RTP Format Specification\\
-		and\\
-	User's Guide}\bigskip\bigskip \\
-        {Version 2.01}\bigskip \\ </title>
- 
-<H1 align=center><b>RTP Format Specification<br>
-		and<br>
-	User's Guide</b><p><br><p><br><p><br><p><br> <br>
-        Version 2.01, 21 October 2011<p><br><p><br> <br></H1>
+\date{\today}
 
-<p>
+\begin{document}
 
-<H3 align=center>author: Howard&nbsp;E.&nbsp;Motteler </H3>
-<H3 align=center>v2.01 updates: Scott Hannon </H3>
+\maketitle
 
-<p>
+\begin{abstract}
 
-<H3 align=center>21 October 2011
-  </H3>
+  \noindent
+  We present a data format for driving radiative transfer
+  calculations and manipulating atmospheric profiles.  Calculated
+  and observed radiances may be included as optional fields, for
+  more general applications.  An implementation as HDF4 Vdatas is
+  given, including Fortran, C, and Matlab application interfaces.
 
-<p>
+\end{abstract}
 
-<H2> Abstract</H2>
-We present a data format for driving radiative transfer calculations
-and manipulating atmospheric profiles.  Calculated and observed
-radiances may be included as optional fields, allowing for the
-representation of basic co-location datasets.  An implementation as
-HDF&nbsp;4 Vdatas is given, including Fortran, C, and Matlab application
-interfaces.
+% \newpage
 
-<p>
-<p>        <H2><A NAME="tth_sEc1">
-1</A>&nbsp;&nbsp;Introduction</H2>
+%---------------------
+\section{Introduction}
+%---------------------
 
-<p>
 The ``Radiative Transfer Profile'' (RTP) format is a data format for
 sets of atmospheric profiles, optionally paired with calculated
 and/or observed radiances.  The format consists of a header record
 and an array of profile records.  It was derived from the GENLN2
-user profile format, extened with selected AIRS level&nbsp;2 field
-definitions.  RTP is currently implemented as HDF&nbsp;4 Vdatas and as
-structure arrays in Fortran, C, and Matlab.
+user profile format, extened with selected AIRS level~2 field
+definitions.  RTP is implemented as HDF4 Vdatas.
 
-<p>
 The format is intended to give a well-defined interface to radiative
 transfer codes, allowing for the specification of just the
 information needed for such calculations.  It allow for modularity
@@ -65,28 +50,68 @@ save space and to provide compatibility across file versions.  The
 optional observation fields may be used to build simple co-location
 datasets.
 
-<p>
-        <H2><A NAME="tth_sEc2">
-2</A>&nbsp;&nbsp;The RTP format definition</H2>
+%--------------------------------------
+\section{The RTP format definition}
+%--------------------------------------
 
-<p>
 The RTP format consists of a header record with information about
 all the profiles in a file, and one or more profiles saved as an
 array of records.  Field definitions for the header and profile
-records are given below.  These names are both the names of the
+records are given below.  These names are both the names of the HDF4
 Vdata fields and the Fortran, C, and Matlab structure fields, with
-the exception of the constituent arrays, as discussed below.
-Depending on the application, only a subset of the fields described
-here need be present in an RTP file.  Fields are matched by field
-name, and no particular order for the header or profile fields is
-assumed.
+the exception of the constituent arrays, as discussed below.  Fields
+are matched by name, and depending on the application, only a subset
+of the fields described here need be present in an RTP file.
 
-<p>
+\subsection{Levels and Layers}
 
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
+The header field {\tt ptype} flags the profile as being a level
+profile, a layer profile, or a pseudo-level profile.  For level
+profiles, the temperature and gas constituent fields represent point
+values at the specified pressure levels.  For layer profiles these
+fields represent integrated values in the space between adjacent
+{\tt plevs}.  The {\tt palts} field, if used, is altitudes of the
+pressure levels for either level or layer profiles.  The {\tt nlevs}
+field is the number of pressure levels.  For layer profiles the
+number of layers is ${\tt nlevs} - 1$.  Pseudo-level profiles
+contain layer gas consistuents and level temperatures.
 
+A convention that lower indices correspond to lower pressures is
+suggested but not required.  The header fields {\tt pmax} and {\tt
+pmin} are intended to hold the max and min level pressures over all
+profiles, or some upper and lower bound on these values.
+
+\subsection{Constituents}
+
+Constituent fields are named with their HITRAN gas ID's, with {\tt
+  gas\_1} water, {\tt gas\_2} CO$_2$, and so on.  A list of HITRAN
+gas ID's is given in an appendix.  The header field {\tt glist}
+gives a list of the IDs for the constituents present in the file.
+The default constituent unit is PPMV.
+
+The Fortran and C application interfaces represent constituents as a
+2D array {\tt gamnt} whose rows are layers and whose columns are gas
+ID index, rather than as a set of separate fields {\tt gas\_<i>} as
+they are actually saved in the file.  The {\tt gas\_<i>} fields are
+the columns of the 2D {\tt gamnt} array.
+
+There are a wide variety of constituent units in current use; in
+consideration of this we have added a {\tt gunit} array to the
+header, assigning a unit code for each constituent and allowing at
+least the potential for automatic conversions.  These unit codes are
+given in {\tt gas\_units\_code.txt}.
+
+Note that only a small subset of possible constituents are typically
+recognized and processed by fast models for radiative transfer
+calculation, typically water, ozone, and perhaps methane, CO$_2$,
+and CO; see the documentation of the relevant radiative transfer
+code for more information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+\vskip-14mm
+{\footnotesize
+\begin{verbatim}
                       RTP Header Fields
 
  field name   short description       data type         units
@@ -98,19 +123,18 @@ assumed.
  pmax         max plevs value        scalar float32   millibars
  ngas         number of gases        scalar int32     [0,MAXGAS]
  glist        constituent gas list   ngas   int32     HITRAN gas ID
- gunit        constituent gas units  ngas   int32     see note [3]
+ gunit [3]    constituent gas units  ngas   int32     gas unit code
 
  pltfid       platform ID            scaler int32     platform code
  instid       instrument ID          scaler int32     instrument code
  nchan        number of channels     scalar int32     count
  ichan        channel numbers        nchan  int32     [0,MAXCHAN]
- vchan        channel center freq.   nchan  float32   1/cm
- vcmin        channel set min freq.  scalar float32   1/cm
- vcmax        channel set max freq.  scalar float32   1/cm
+ vchan        channel center freq.   nchan  float32   cm^-1
+ vcmin        channel set min freq.  scalar float32   cm^-1
+ vcmax        channel set max freq.  scalar float32   cm^-1
 
  iudef        user-defined array     MAXIUDEF int32   undefined
  itype        user-defined integer   scaler int32     undefined
-
 
 Notes:
 
@@ -126,29 +150,28 @@ Notes:
      For example, a profile with both calculated and observed IR
      radiances would have pfields = PROFBIT + IRCALCBIT + IROBSVBIT
 
- [3] For suggested gas units code see file ``gas_units_code.txt''
+ [3] For suggested gas units code, see the file gas_units_code.txt
 
-</pre>
-</font>
-<p>
-<p>
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
-
+\end{verbatim}
+}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+{\footnotesize
+\begin{verbatim}
                 Profile Fields -- Surface Data
   
  field name   short description       data type         units
  ----------   ------------------     -----------       -------
- plat         profile latitude       scalar float32   [-90,90] deg.
- plon         profile longitude      scalar float32   [-180,360] deg.
+ plat         profile latitude       scalar float32   [-90 to 90] deg.
+ plon         profile longitude      scalar float32   [-180 to 360] deg.
  ptime        profile time           scalar float64   TAI  
 
  stemp        surface temperature    scalar float32   Kelvins
  salti        surface altitude       scalar float32   meters
  spres        surface pressure       scalar float32   millibars
- landfrac     land fraction          scalar float32   [0,1]
- landtype     land type code         scalar int32     see text
+ landfrac     land fraction          scalar float32   [0 to 1]
+ landtype     land type code         scalar int32     land code
 
  wspeed       wind speed             scalar float32   meters/sec
 
@@ -159,48 +182,47 @@ Notes:
 
 Notes:
 
-   [1] The nemis and efreq data is also used with cloud emis & rho.
+ [1] The nemis and efreq data is also used with cloud emis and rho.
 
-</pre>
-</font>
-<p>
-<p>
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
+
 
                 Profile Fields -- Atmospheric Data
 
- field name   short description       data type         units
- ----------   ------------------     -----------       -------
- nlevs        number of press lev's  scalar int32     [0,MAXLEV]
- plevs        pressure levels        nlevs  float32   millibars
- palts        level altitudes        nlevs  float32   meters
- ptemp        temperature profile    nlevs  float32   Kelvins
- gas_&lt;i&#62; [1]  constituent amounts    nlevs  float32   PPMV
- gxover       gas crossover press    ngas   float32   millibars
- txover       temp crossover press   scalar float32   millibars
- co2ppm       CO2 mixing ratio       scalar float32   PPMV
+ field name   short description         data type         units
+ ----------   ------------------       -----------       -------
+ nlevs        number of press lev's    scalar int32     [0,MAXLEV]
+ plevs        pressure levels          nlevs  float32   millibars
+ palts        level altitudes          nlevs  float32   meters
+ ptemp        temperature profile      nlevs  float32   Kelvins
+ gas_<i> [1]  gas amount               nlevs  float32   HEAD.gunit
+ gtotal       total column gas amount  ngas   float32   undefined
+ gxover       gas crossover press      ngas   float32   millibars
+ txover       temp crossover press     scalar float32   millibars
+ co2ppm       CO2 mixing ratio         scalar float32   PPMV
 
 Notes:
 
  [1] There is one field here for each constituent in a file; the 
      constituents are listed in the header field glist.  The Fortran 
-     API presents this data as an ngas x nlevs array.
+     and C APIs presents this data as [ngas x nlevs] array gamnt.
 
-</pre>
-</font>
-<p>
-<p>
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
-
+\end{verbatim}
+}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+{\footnotesize
+\begin{verbatim}
               Profile Fields -- Cloud Data
   
  field name   short description       data type         units
  ----------   ------------------     -----------       -------
  clrflag      clear flag             scalar int32     [0,1] or clear code
+
+ tcc          total cloud cover      scalar float32   [0 to 1]
+ cc           cloud cover            nlevs float32    [0 to 1]
+ ciwc         cloud ice water        nlevs float32    g/g 
+ clwc         cloud liquid water     nlevs float32    g/g 
 
  ctype   [1]  cloud type code        scalar int32     cloud code
  cfrac   [2]  cloud fraction         scalar float32   [0 to 1]
@@ -225,52 +247,45 @@ Notes:
 
 Notes:
 
- [1] For suggested cloud type codes see file ``cloud_code.txt''
-
+ [1] For suggested cloud type codes see file cloud_code.txt
  [2] These cloud fields may instead be used for alternate surfaces.
-
-</pre>
-</font>
-<p>
-<p>
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
-
+    
+\end{verbatim}
+}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+{\footnotesize
+\begin{verbatim}
               Profile Fields -- Orientation Data
   
  field name   short description       data type         units
  ----------   ------------------     -----------       -------
- pobs [1]     observer pressure      scalar float32   millibars
+ pobs         observer pressure      scalar float32   millibars
  zobs         observer height        scalar float32   meters
  upwell       radiation direction    scalar int32     1=up, 2=down
- scanang      IR scan/view angle     scalar float32   [-90,90] deg.
- satzen       IR zenith angle        scalar float32   [0,90] deg.
- satazi       IR azimuth angle       scalar float32   [-180,360] deg.
+ scanang      IR scan/view angle     scalar float32   [-90 to 90] deg.
+ satzen       IR zenith angle        scalar float32   [0 to 180] deg.
+ satazi       IR azimuth angle       scalar float32   [-180 to 180] deg.
 
- solzen       sun zenith angle       scalar float32   [0,90] deg.
- solazi       sun azimuth angle      scalar float32   [-180,360] deg.
+ solzen       sun zenith angle       scalar float32   [0 to 180] deg.
+ solazi       sun azimuth angle      scalar float32   [-180 to 180] deg.
  sundist      sun-Earth distance     scalar float32   meters
  glint        glint distance         scalar float32   meters
 
- [1] For satellite observations, it might be more useful to use pobs
-     for the satellites orbit phase (in degrees).
-
-
-</pre>
-</font>
-<p>
-<p>
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
-
+\end{verbatim}
+}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+{\footnotesize
+\begin{verbatim}
               Profile Fields -- Radiance Data
   
  field name   short description       data type         units
  ----------   ------------------     -----------       -------
- rlat         radiance obs lat.      scalar float32   [-90,90] deg.
- rlon         radiance obs lon.      scalar float32   [-180,360] deg. 
+ rlat         radiance obs lat.      scalar float32   [-90 to 90] deg.
+ rlon         radiance obs lon.      scalar float32   [-180 to 360] deg. 
  rtime        radiance obs time      scalar float64   TAI
 
  findex       file (granule) index   scalar int32     index
@@ -285,14 +300,13 @@ Notes:
 
  rcalc        calculated IR rad.     nchan  float32   mW/m^2/cm^-1/str
 
-</pre>
-</font>
-<p>
-<p>
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
-
+\end{verbatim}
+}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+{\footnotesize
+\begin{verbatim}
               Profile Fields -- User Defined Data
   
  field name   short description       data type         units
@@ -302,133 +316,64 @@ Notes:
  iudef        user-defined array     MAXIUDEF int32   undefined
  itype        user-defined integer   scalar int32     undefined
 
-</pre>
-</font>
-<p>
-<p>      <H3><A NAME="tth_sEc2.1">
-2.1</A>&nbsp;&nbsp;Levels and Layers</H3>
+\end{verbatim}
+}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<p>
-The header field <tt>ptype</tt> flags the profile as being a level
-profile, a layer profile, or a pseudo-level profile.
-For level profiles, the temperature and gas constituent fields
-represent point values at the specified <tt>plevs</tt>.  For layer
-profiles these fields represent integrated values in the space between
-adjacent <tt>plevs</tt>.  The <tt>palts</tt> field, if used, is
-altitudes of the pressure levels for either level or layer profiles.
- The <tt>nlevs</tt> field is the number of pressure levels.  For layer
-profiles the number of layers is <tt>nlevs - 1</tt>.  Pseudo-level
-profiles contain layer gas consistuents and level temperature.
+\subsection{Field Sets and Sizes}
 
-<p>
-A convention that lower indices correspond to lower pressures is
-suggested but not required.  The header fields <tt>pmax</tt> and <tt>
-pmin</tt> are intended to hold the max and min level pressures over all
-profiles, or some upper and lower bound on these values.
+The RTP interface uses the header size fields {\tt mlevs}, {\tt
+  memis}, {\tt ngas}, {\tt nchan}, and {\tt pfields} to build new,
+generally much more compact, field lists for the header and profile
+Vdata buffers.  Whenever a header size field is zero, the relevant
+header or profile field is dropped from the Vdata.  The header size
+fields {\tt mlevs}, {\tt memis}, {\tt ngas}, and {\tt nchan} all
+default to zero, and should be less than or equal to the
+corresponding max limits {\tt MAXLEV}, {\tt MAXEMIS}, {\tt MAXGAS},
+and {\tt MAXCHAN}.
 
-<p>
-      <H3><A NAME="tth_sEc2.2">
-2.2</A>&nbsp;&nbsp;Constituents</H3>
-
-<p>
-Constituent fields are named with their HITRAN gas ID's, with <tt>
-gas_1</tt> water, <tt>gas_2</tt> CO<sub>2</sub>, and so on.  A list of HITRAN
-gas ID's is given in an appendix.  The header field <tt>glist</tt>
-gives a list of the constituent ID's for the constituents present
-in the file.  The default constituent unit is PPMV.
-
-<p>
-The Fortran and C application interfaces represent constituents as
-a 2D array <tt>gamnt</tt> whose rows are layers and whose columns are
-gas ID index, rather than as a set of separate fields <tt>
-gas_&lt;i&#62;</tt> as they are actually saved in the file; the <tt>
-gas_&lt;i&#62;</tt> fields are the columns of the 2D <tt>gamnt</tt> array.
-
-<p>
-There are a wide variety of constituent units in current use; in
-consideration of this we have added a <tt>gunit</tt> array to the
-header, assigning a unit code for each constituent and allowing at
-least the potential for automatic conversions.  These unit codes are
-given in <tt>gas_units_code.txt</tt>.
-
-
-<p>
-Note that only a small subset of possible constituents are typically
-recognized and processed by fast models for radiative transfer
-calculation, typically water, ozone, and perhaps methane, CO<sub>2</sub>,
-and CO; see the documentation of the relevant radiative transfer
-code for more information.
-
-<p>
-      <H3><A NAME="tth_sEc2.3">
-2.3</A>&nbsp;&nbsp;Field Sets and Sizes</H3>
-
-<p>
-Individual profiles may have varying pressures levels and surface
-emissivity/reflectance sets.  All profiles
-in a file are assumed to have the same constituent set, and if
-radiances are present all profiles have the same channel set.
-
-<p>
-RTP fields may be scalars or one-dimensional arrays; this is a
-limitation of the underlying HDF Vdata format.  Most arrays have an
+Individual profiles have pressure levels set with {\tt nevs}, and
+emissivity and reflectance sets with {\tt nemis}, both of which
+default to zero.  These should be less than or equal to the header
+limits {\tt mlevs} and {\tt memis}.  For most applications they can
+just be set to {\tt mlevs} and {\tt memis}.  All profiles in a file
+are assumed to have the same constituent set, and if radiances are
+present all profiles have the same channel set.  Most arrays have an
 associated size field.  If this size field is in the header, as in
-the case of <tt>ngas</tt> or <tt>nchan</tt> then it is assumed to be the
+the case of {\tt ngas} or {\tt nchan} then it is assumed to be the
 same for all profiles, while if the size field is in a profile, as
-in the case of <tt>nlevs</tt> or <tt>nemis</tt>, then it applies only to
+in the case of {\tt nlevs} or {\tt nemis}, then it applies only to
 that profile.
 
-<p>
-The size of array fields in the RTP HDF Vdata implementation may in
-some cases be bigger than what is specified by the associated size
-field.  This can happen because the HDF Vdata format requires a
-single size be associated with each field, which then has to be at
-least the max of all the actual field sizes.  Because of this, when
-a size-field is avaliable its value should be used instead of the
-possibly larger Vdata field size.
+% \pagebreak
+\subsection{Field Groups}
 
-<p>
-The field set for RTP is not required to be fixed to precisely the
-fields listed here.  Fields are matched by field name, and no
-particular order for the header or profile fields is assumed.
-
-<p>
-      <H3><A NAME="tth_sEc2.4">
-2.4</A>&nbsp;&nbsp;Field Groups</H3>
-
-<p>
-The <tt>pfields</tt> field in the header is used by the C/Fortran API
+The {\tt pfields} field in the header is used by the C/Fortran API
 to control what which field groups will be written to a file.  Profile
-fields are organized as five groups,
+fields are organized as three groups,
 
-<p>
-
-<pre>
+{\small
+\begin{verbatim}
    1. profile data                     PROFBIT = 1
    2. calculated radiances           IRCALCBIT = 2
    3. observed radiances             IROBSVBIT = 4
-</pre>
+\end{verbatim}
+}
 
-<p>
 These groups can occur in any combination.  The associated numbers
-are bit fields, set in pfields if the associated data is present
-in the file.  Thus for example profile data with calculated and
-observed radiances would be represented as
-<tt>pfields</tt>&nbsp; =  <tt>PROFBIT</tt>&nbsp;+ <tt>IRCALCBIT</tt>&nbsp;+ <tt>
-IROBSVBIT</tt>.
+are bit fields, to be set in pfields if the associated data is
+present in the file.  Thus for example profile data with calculated
+and observed radiances would be represented as {\tt pfields}~$=$
+{\tt PROFBIT}~$+$ {\tt IRCALCBIT}~$+$ {\tt IROBSVBIT}.
 
-<p>
-Note that we can have <tt>nchan</tt>&nbsp;<font face=symbol> &gt; </font
->0 and channel data in the
+Note that we can have {\tt nchan}~$>0$ and channel data in the
 header without having either calculated or observed radiances in a
 file, to specify a set of channels whose radiances are to be
 calculated later.
 
-<p>
-      <H3><A NAME="tth_sEc2.5">
-2.5</A>&nbsp;&nbsp;HDF Attributes</H3>
+\subsection{HDF Attributes}
 
-<p>
 Attributes are associated either with the header or with the
 profile record set, and have three parts: the field the attribute
 is associated with, the attribute name, and the attribute text.  In
@@ -436,32 +381,26 @@ addition to proper field names, the field name ``header'' is used
 for general header attributes, and ``profile'' for general profile
 attributes.
 
-<p>
 RTP attributes should typically include such information as title,
 author, date, and at least a brief descriptive comment.  This
 general information should be set as attributes of the header
-record.  Note that the Fortran/C API uses the 2D <tt>gamnt</tt> array
+record.  Note that the Fortran/C API uses the 2D {\tt gamnt} array
 for constituents; this is not actually a Vdata field, and so can not
 take an attribute.  Attributes may be attached to individual
-constituents with their <tt>gas_&lt;i&#62;</tt> names, where <tt>&lt;i&#62;</tt> is the
+constituents with their {\tt gas\_<i>} names, where {\tt <i>} is the
 HITRAN gas ID.
 
-<p>
-        <H2><A NAME="tth_sEc3">
-3</A>&nbsp;&nbsp;Application Interfaces</H2>
+\section{Application Interfaces}
 
-<p>
-      <H3><A NAME="tth_sEc3.1">
-3.1</A>&nbsp;&nbsp;The Fortran and C API</H3>
+\subsection{The Fortran and C API}
 
-<p>
-The Fortran API consists of four routines: <tt>rtpopen</tt>, <tt>
-rtpread</tt>, <tt>rtpwrite</tt>, and <tt>rtpclose</tt>.  Documentation for
+The Fortran API consists of four routines: {\tt rtpopen}, {\tt
+rtpread}, {\tt rtpwrite}, and {\tt rtpclose}.  Documentation for
 these is included in an appendix.  The Fortran API uses static
 structures whose fields, with a few exceptions noted below, are the
 same as the RTP fields defined above.  Normally, only a subset of
 the Fortran structure fields will be written, with the header field
-<tt>pfields</tt> and the header size fields used to determine what
+{\tt pfields} and the header size fields used to determine what
 actually goes into a file.  When reading data, if a file contains
 header or profile fields not in the Fortran structure definition,
 they are simply ignored.  Fields that are defined in the Fortran
@@ -469,11 +408,10 @@ structure but are not in a file are returned as ``BAD'', or with the
 first element BAD, for vectors, while missing size fields are
 returned as zero.
 
-<p>
-Attributes are passed to and from the Fortran API in the <tt>
-RTPATTR</tt> structure array.  The records in this array have three
-fields: <tt>fname</tt>, the field name the attribute is to be
-associated with, <tt>aname</tt>, the attribute name, and <tt>atext</tt>,
+Attributes are passed to and from the Fortran API in the {\tt
+RTPATTR} structure array.  The records in this array have three
+fields: {\tt fname}, the field name the attribute is to be
+associated with, {\tt aname}, the attribute name, and {\tt atext},
 the attribute text.  The header attribute field name should be
 either ``header'', for a general attribute or comment, or a
 particular header field name.  Similarly, the attribute profile
@@ -483,23 +421,21 @@ and the record after the last valid record in an attribute set
 should have fname set to char(0).  See ftest1.f for and ftest2.f
 examples of reading, writing, and updating attributes.
 
-<p>
 The Fortran structures differer from the Vdata fields in two ways.
-First, instead of a <tt>gas_&lt;i&#62;</tt> profile field for each
-constituent, the Fortran API uses a single array <tt>
-gamnt(MAXLEV,MAXGAS)</tt> to pass constituent amounts; the <tt>
-gas_&lt;i&#62;</tt> fields from the HDF file are the columns of this array.
+First, instead of a {\tt gas\_<i>} profile field for each
+constituent, the Fortran API uses a single array {\tt
+gamnt(MAXLEV,MAXGAS)} to pass constituent amounts; the {\tt
+gas\_<i>} fields from the HDF file are the columns of this array.
 Second, the Fortran/C RTP header structure includes the following
 max size fields, which are not actually written to the Vdata header.
 
-<p>
-
-<pre>
+{\small
+\begin{verbatim}
  mlevs     max number of levels   scalar int32   [0,MAXLEV]
  memis     max num of emis pts    scalar int32   [0,MAXEMIS]
-</pre>
+\end{verbatim}
+}
 
-<p>
 On a read, these fields are set to the associated profile Vdata
 field sizes.  On a write, they are used to to set the size of the
 associated Vdata profile fields.  They can simply be set to the MAX
@@ -507,53 +443,48 @@ limits, or to zero if the fields are not used; but using an actual
 max for the profile set, particularly for mlevs, can give a
 significant space savings.
 
-<p>
-A makefile is supplied to build the RTP API routines as a library
-file librtp.a.  A Fortran demo makefile, ``Makefile.f77'' is also
-provided, to compile the F77 demo programs ftest1.f and ftest2.f
-and link them with the RTP libraries.
+A Makefile is supplied to build the RTP API routines as a library
+file librtp.a, along with some C and Fortran test programs and
+utilities.
 
-<p>
-      <H3><A NAME="tth_sEc3.2">
-3.2</A>&nbsp;&nbsp;The Matlab API</H3>
+\subsection{The Matlab API}
 
-<p>
 The RTP Matlab implementation is a fairly direct mapping between
-Matlab structure arrays and HDF&nbsp;4 Vdatas.  A read will only return
+Matlab structure arrays and HDF~4 Vdatas.  A read will only return
 those fields that are in the HDF Vdata, and a write will only write
 the fields in the Matlab structure.  The Matlab RTP API is available
-as part of the ASL package ``h4tools''; see the README file there
-for more information.  The main two routines are ``rtpread.m'' and
-``rtpwrite.m'', which are a fast and efficient reader and writer
-of RTP files.
-<p>
-      <H3><A NAME="tth_sEc3.3">
-3.3</A>&nbsp;&nbsp;Data Types</H3>
+as part of the ASL package h4tools; see the README file there for
+more information.  The key routines are rtpread.m and rtpwrite.m.
+These Matlab functions are reasonably efficient, but there is a key
+difference between the Matlab and Fortran/C interfaces---the
+Fortran/C interface loops on records, with only minimal buffering
+needed, while the Matlab interface loads the entire file in memory,
+for both reads and writes.
 
-<p>
-Most RPT fields are either 32-bit integers or 32-bit floats, as
-noted in the field tables, with the exception of the time fields
-which are 64-bit floats, and the pnote and calflag fields, which are
-uint8 character arrays (as of 21 October 2011; they were previously
-char). The HDF C types are defined in the HDF include file ``hdf.h''.
+% \subsection{Data Types}
+% 
+% Most RPT fields are either 32-bit integers or 32-bit floats, as
+% noted in the field tables, with the exception of the time fields
+% which are 64-bit floats, and the pnote and calflag fields, which are
+% uint8 character arrays (as of 21 October 2011; they were previously
+% char).  The HDF C types are defined in the HDF include file ``hdf.h''.
+% 
+% {\footnotesize
+% \begin{verbatim}
+%    HDF type codes     HDF C types      Fortran types
+%     DFNT_INT32          int32           integer*4
+%     DFNT_FLOAT32        float32         real*4
+%     DFNT_FLOAT64        float64         real*8
+%     DFNT_CHAR8          char8           character*<n>
+%     DFNT_UCHAR8         uchar8          character*<n>
+%     DFNT_UINT8          uchar8          character*<n>
+% \end{verbatim}
+% }
 
-<p>
-<font size="-1">
-<pre>
-   HDF type codes     HDF C types      Fortran types
-    DFNT_INT32          int32           integer*4
-    DFNT_FLOAT32        float32         real*4
-    DFNT_FLOAT64        float64         real*8
-    DFNT_CHAR8          char8           character*&lt;n&#62;
-    DFNT_UCHAR8         uchar8          character*&lt;n&#62;
-    DFNT_UINT8          uchar8          character*&lt;n&#62;
-</pre>
-</font>
-<p>
-
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
+\newpage
+\section{Fortran API}
+{\footnotesize
+\begin{verbatim}
 
 NAME
 
@@ -595,14 +526,12 @@ DISCUSSION
   a read.  The end of the attribute array is flagged with a char(0)
   at the beginning of the fname field.
 
-</pre>
-</font>
-<p>
-<p>
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
+\end{verbatim}
+}
 
+\newpage
+{\footnotesize
+\begin{verbatim}
 NAME    
 
   rtpread -- Fortran interface to read an RTP profile
@@ -626,13 +555,11 @@ VALUE RETURNED
 
   1 (the number of profiles read) on success , -1 on errors or EOF
 
-</pre>
-</font>
-<p>
-<p>
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
+\end{verbatim}
+}
+
+{\footnotesize
+\begin{verbatim}
 
 NAME    
 
@@ -655,14 +582,12 @@ VALUE RETURNED
 
   0 on success, -1 on errors
 
-</pre>
-</font>
-<p>
-<p>
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
+\end{verbatim}
+}
 
+\newpage
+{\footnotesize
+\begin{verbatim}
 NAME    
 
   rtpclose -- Fortran interface to close an RTP open channel
@@ -682,13 +607,7 @@ VALUE RETURNED
 
   0 on success, -1 on errors
 
-</pre>
-</font>
-<p>
-<p>
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
+
 
 NAME    
 
@@ -714,44 +633,63 @@ VALUE RETURNED
 
   rtpinit always returns 0
 
-</pre>
-</font>
-<p>
-<p>
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
+\end{verbatim}
+}
 
-   NAME
+\section{Modification}
 
-     rtpdump -- basic RTP dump utility
-  
-   USAGE
-  
-     rtpdump [-achp] [-n k] rtpfile
-  
-   OPTIONS
-  
-     -a      dump attributes
-     -c      dump RTP channel info
-     -h      dump header structure
-     -p      dump profile structure
-     -n &lt;k&#62;  select profile &lt;k&#62; for channel or profile 
-             structure dumps; the first profile is 1
-  
-   BUGS
+The RTP parameters and field sets can be modified, but some caution
+is in order.  Parameters and structures are defined in rtp.h, in the
+include directory.  The corresponding Fortran declarations are in
+rtpdefs.f.  Declarations that reserve space (initialized structures)
+are in rtpdef.h.  These must all be in agreement.  So for example we
+would set the parameter MAXLEV to 120 in both rtp.h and rtpdefs.f.
 
-     the output is from debug and error dump routines and is not very
-     fancy; the -p option only prints a subset of profile fields
- 
-</pre>
-</font>
-<p>
-<p>
-<p><A NAME="tth_fIg1">
-</A> <font size="-1">
-<pre>
+The C/Fortran API uses C and Fortran structs as an interface to the
+RTP files.  This is convenient, but the structs are static, with a
+fixed set of fields, while the format of an RTP file can vary; for
+example with different sets of fields, or different field sizes.  To
+make this work the interface uses both a static, conventional record
+structure and a list of field names as strings, with field size and
+data type.  We call the latter data structure FLISTs.  The string
+names are used to match fields in the file with positions in the
+static buffer structure.  The C interface structures are defined in
+rtp.h, the corresponding Fortran structures in rtpdefs.f, and the
+associated FLISTs in rtpdef.h.  For example, the field {\tt glist}
+might appear in rtp.h, in the structure rtp\_head, as
+\begin{verbatim}
+    int32       glist[MAXGAS];   /* constituent gas list */
+\end{verbatim}
+\noindent 
+The corresponding line in rtpdefs.f, in the Fortran structure
+/RTPHEAD/, would be
+\begin{verbatim}
+    integer*4   glist(MAXGAS)    ! constituent gas list
+\end{verbatim}
+\noindent
+{\tt glist} also needs to be set in rtpdef.h, in the struct FLIST
+hfield, with the line
+\begin{verbatim}
+   "glist",     DFNT_INT32,     MAXGAS,
+\end{verbatim}
+\noindent
+The positions of the fields should be the same in the C and Fortran
+structs, the FLISTs, and in the documentation.  The parameters
+NHFIELD and NPFIELD (the number of header and profile fields) should
+be updated to reflect added or deleted fields.  Finally, fields
+whose size is set with the header values {\tt memis}, {\tt mlevs},
+{\tt ngas}, {\tt nchan}, and {\tt pfields} require modification of
+rtpwrite1.c; look for similar cases there as a pattern.
 
+\newpage
+\section{Gas IDs}
+{\footnotesize
+\begin{verbatim}
+
+
+                   HITRAN Gas ID List
+                   ------------------
+                                    
     Gases from the 2008 HITRAN line database
     
      1 = H2O (water vapor)          25 = C2H2 (acetylene)
@@ -780,6 +718,15 @@ VALUE RETURNED
     24 = CH3Cl
     25 = H2O2
 
+\end{verbatim}
+}
+\newpage
+{\footnotesize
+\begin{verbatim}
+
+             Non-standard Gas ID Lists
+             -------------------------
+
     Gases represented by cross-sections
  
     51 = CCl3F (CFC-11)             66 = CHClFCF3 (HCFC-124)
@@ -804,10 +751,9 @@ VALUE RETURNED
     201 Cloud one
     202 Cloud two
     203 Cloud three
-  
-</pre>
-</font>
-<p>
-<p>
-<p><hr><small>File translated from T<sub><font size="-1">E</font></sub>X by <a href="http://hutchinson.belmont.ma.us/tth/">T<sub><font size="-1">T</font></sub>H</a>, version 1.98.<br>On 18 Mar 2002, 06:20.</small>
-</HTML>
+
+\end{verbatim}
+}
+
+\end{document}
+
