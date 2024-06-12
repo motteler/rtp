@@ -673,13 +673,14 @@ hfield, with the line
    "glist",     DFNT_INT32,     MAXGAS,
 \end{verbatim}
 \noindent
-The positions of the fields should be the same in the C and Fortran
-structs, the FLISTs, and in the documentation.  The parameters
-NHFIELD and NPFIELD (the number of header and profile fields) should
-be updated to reflect added or deleted fields.  Finally, fields
-whose size is set with the header values {\tt memis}, {\tt mlevs},
-{\tt ngas}, {\tt nchan}, and {\tt pfields} require modification of
-rtpwrite1.c; look for similar cases there as a pattern.
+The positions of the fields should be the same in the C and
+Fortran structs, the FLISTs, and in the documentation.  The
+parameters NHFIELD and NPFIELD (the number of header and profile
+fields) in rtp.h should be updated to reflect added or deleted
+fields.  Finally, fields whose size is set with the header values
+{\tt memis}, {\tt mlevs}, {\tt ngas}, {\tt nchan}, and {\tt pfields}
+require modification of rtpwrite1.c; look for similar cases there as
+a pattern.
 
 \newpage
 \section{Gas IDs}
