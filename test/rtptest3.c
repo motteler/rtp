@@ -51,7 +51,7 @@ main (int argc, char *argv[]) {
     head1.gunit[i] = 1;
   }
 
-  head1.nchan = 5000;
+  head1.nchan = 4300;
   for (i=0; i < head1.nchan; i++) {
     head1.vchan[i] = 500 + i/4.0;
     head1.ichan[i] = i;

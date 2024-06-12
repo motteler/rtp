@@ -58,7 +58,7 @@
         parameter ( MAXGAS    =   16 )
         parameter ( MAXGASID  =  303 )
         parameter ( MAXLEV    =  120 )
-        parameter ( MAXCHAN   = 4231 )
+        parameter ( MAXCHAN   = 4300 )
         parameter ( MAXPNOTE  =   80 )
         parameter ( MAXUDEF   =   20 )
         parameter ( MAXIUDEF   =  10 )
@@ -219,7 +219,7 @@
           character*80  pnote             ! profile annotation, size MAXPN4
           real*4     udef(MAXUDEF)	  ! user-defined real array
           integer*4  iudef(MAXIUDEF)	  ! user-defined integer array
-          integer*4  itype                ! user0defined integer
+          integer*4  itype                ! user-defined integer
 
         END STRUCTURE
 
